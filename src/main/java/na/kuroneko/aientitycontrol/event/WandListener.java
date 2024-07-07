@@ -12,16 +12,14 @@ import org.bukkit.entity.Zombie;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Transformation;
 
-import javax.swing.*;
-
 public class WandListener implements Listener {
     private final World world = Bukkit.getWorld("world");
+    private int taskId;
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onInteract(PlayerInteractEvent event) {
@@ -53,40 +51,26 @@ public class WandListener implements Listener {
                         entity.setTransformation(transformation);
                     });
 
-                    Bukkit.getScheduler().scheduleSyncRepeatingTask(AiEntityControl.instance, () -> {
-                    }, 0, 20);
+                    taskId = Bukkit.getScheduler().scheduleSyncRepeatingTask(AiEntityControl.instance, new BukkitRunnable() {
+                        double yawIncrement = 1.8;
+                        int timePassed = 0;
+                        int duration = 60;
+
+                        @Override
+                        public void run() {
+                            if (timePassed >= duration) {
+                                display.remove();
+                                Bukkit.getScheduler().cancelTask(taskId);
+                            } else {
+                                Location currentLoc = display.getLocation();
+                                currentLoc.setYaw((float) (currentLoc.getYaw() + yawIncrement));
+                                display.teleport(currentLoc);
+                                timePassed++;
+                            }
+                        }
+                    }, 0, 1);
                 }
-
-
-//                    new BukkitRunnable() {
-//                        double timePassed = 0; // Track elapsed time in ticks
-//                        double yawIncrement = 1.8; // Smaller yaw increment for smoother rotation
-//                        double totalDurationTicks = 200; // 10 seconds in ticks (20 ticks/second)
-//                        double updateFrequencyTicks = 1; // Update every tick for smoother rotation
-//
-//                        @Override
-//                        public void run() {
-//                            if (timePassed >= totalDurationTicks) {
-//                                display.remove();
-//                                this.cancel();
-//                            } else {
-//                                Location currentLocation = display.getLocation();
-//                                currentLocation.setYaw((float) (currentLocation.getYaw() + yawIncrement));
-//                                display.teleport(currentLocation);
-//                            }
-//                            timePassed += updateFrequencyTicks;
-//                        }
-//                    }.runTaskTimer(AiEntityControl.instance, 0L, 1L);
-//                }
             }
-
-            if (event.getAction().isLeftClick()) {
-                event.setCancelled(true);
-                Bukkit.getScheduler().scheduleSyncRepeatingTask(AiEntityControl.instance, () -> {
-                }, 0, 20);
-            }
-            Bukkit.getScheduler().cancelTask(10);
         }
-
     }
 }
