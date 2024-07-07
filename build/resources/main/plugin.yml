@@ -1,0 +1,4 @@
+name: AiEntityControl
+version: '1.0-SNAPSHOT'
+main: na.kuroneko.aientitycontrol.AiEntityControl
+api-version: '1.20'
