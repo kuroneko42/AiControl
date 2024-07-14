@@ -1,9 +1,6 @@
 package na.kuroneko.aientitycontrol.commands;
 
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.World;
-import org.bukkit.attribute.Attribute;
+import dev.lone.itemsadder.api.CustomStack;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.defaults.BukkitCommand;
 import org.bukkit.entity.*;
@@ -19,22 +16,13 @@ public class MobCommand extends BukkitCommand {
     @Override
     public boolean execute(@NotNull CommandSender sender, @NotNull String label, @NotNull String[] args) {
         if (sender instanceof Player player) {
-            World world = player.getWorld();
-            Location dummy = player.getLocation().add(player.getLocation().getDirection().multiply(13));
-
-            ArmorStand armorStand = world.spawn(dummy, ArmorStand.class, entity -> {
-                entity.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(50.0);
-                entity.setHealth(50.0);
-            });
-
-            world.spawn(player.getLocation(), Zombie.class, entity -> {
-                entity.setCustomName("와왁왁");
-                entity.getEquipment().setItemInMainHand(new ItemStack(Material.DIAMOND_SWORD));
-                entity.getEquipment().setHelmet(new ItemStack(Material.IRON_HELMET));
-                entity.getEquipment().setItemInOffHand(new ItemStack(Material.NETHERITE_SWORD));
-                entity.getPathfinder().setCanPassDoors(true);
-                entity.getPathfinder().setCanPassDoors(true);
-            });
+            CustomStack customStack = CustomStack.getInstance("magic_staff");
+            if (customStack == null) {
+                player.sendMessage("찾지 못했습니다.");
+                return true;
+            }
+            ItemStack wandItem = customStack.getItemStack();
+            player.getInventory().addItem(wandItem);
         }
         return false;
     }

@@ -12,7 +12,7 @@ import java.util.Optional;
 
 public final class AiEntityControl extends JavaPlugin {
 
-    private static ProtocolManager protocolManager;
+    public static ProtocolManager protocolManager;
     public static AiEntityControl instance;
 
     public static @NotNull Optional<ProtocolManager> getProtocolManager() {
